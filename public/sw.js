@@ -37,7 +37,7 @@ self.addEventListener('activate', function(event) {
 // network only strategy
 self.addEventListener('fetch', function(event) {
   event.respondWith(
-    return fetch(event.request)
+    fetch(event.request)
   )}
 );
 
