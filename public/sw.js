@@ -34,10 +34,17 @@ self.addEventListener('activate', function(event) {
   );
 });
 
-// network only strategy
+// network, cache fallback strategy
 self.addEventListener('fetch', function(event) {
   event.respondWith(
+    // try fetching from betwork first
     fetch(event.request)
+    // if that fails try loading the stuff from cache
+    .catch(function(err) {
+      console.log("Network Fetch failed for " + JSON.stringify(event.request) + " ... trying cache");
+      // see if the request is cached anywhere and return it
+      return caches.match(event.request);
+    })
   )}
 );
 
