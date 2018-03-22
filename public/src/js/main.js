@@ -18,14 +18,35 @@ button.addEventListener('click', function(event) {
   }
 });
 
-fetch('https://httpbin.org/ip')
+var url = 'https://httpbin.org/ip';
+var networkDataReceived = false;
+
+fetch(url)
   .then(function(res) {
     return res.json();
   })
   .then(function(data) {
-    console.log(data.origin);
+    networkDataReceived = true;
+    console.log('Fetching '+ JSON.stringify(data.origin) +' from web');
     box.style.height = (data.origin.substr(0, 2) * 5) + 'px';
   });
+
+if ('caches' in window) {
+  caches.match(url)
+    .then(function(response){
+      if (response) {
+        return response.json();
+      }
+    })
+    .then(function(data) {
+      console.log('Fetching ' + JSON.stringify(data) + ' from cache');
+      if(!networkDataReceived) {
+        // Do something
+      }
+    });
+}
+
+
 
 // 1) Identify the strategy we currently use in the Service Worker (for caching)
 // 2) Replace it with a "Network only" strategy => Clear Storage (in Dev Tools), reload & try using your app offline
